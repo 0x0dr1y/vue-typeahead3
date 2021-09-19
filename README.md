@@ -9,7 +9,7 @@
 - [About](#sectionAbout)
 - [Installation](#sectionInstall)
 - [Usage](#sectionUsage)
-  - Properties(#sectionConfiguration)
+  - [Properties](#sectionConfiguration)
 
 ## About
 
