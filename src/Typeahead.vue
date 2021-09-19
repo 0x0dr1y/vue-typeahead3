@@ -3,14 +3,14 @@
     <div class="search-container">
       <input
         type="search"
-        @search="handleEsc"
+        @search="handleClear"
         v-model="searchTerm"
         :placeholder="placeholder"
         :class="{ 'has-results': results.length }"
         @keyup.up="handleArrow(-1)"
         @keyup.down="handleArrow(1)"
         @keyup.esc="handleEsc"
-        @keyup.enter.prevent="handleSelect"
+        @keyup.enter="handleSelect"
       />
     </div>
     <div v-if="results.length && !selected" class="results-container">
@@ -89,7 +89,7 @@ export default defineComponent({
     const searchTerm = ref("");
     const selected = ref(false);
     const focused = ref(-1);
-    const { valueKey, categoryKey, data, searchKey } = toRefs(props);
+    const { valueKey, data, searchKey } = toRefs(props);
 
     const results: ComputedRef<Record<string, string>[]> = computed(
       (): Record<string, string>[] => {
@@ -103,8 +103,7 @@ export default defineComponent({
     );
 
     const select = (result: Record<string, string>): void => {
-      console.log(result);
-      searchTerm.value = result[categoryKey.value];
+      searchTerm.value = result[valueKey.value];
       selected.value = true;
       return emit("update:modelValue", result);
     };
@@ -124,6 +123,12 @@ export default defineComponent({
       selected.value = false;
       focused.value = -1;
       return emit("update:modelValue", null);
+    };
+
+    const handleClear = (): void => {
+      if (!searchTerm.value) {
+        handleEsc();
+      }
     };
 
     const handleSelect = (): void => {
@@ -152,6 +157,7 @@ export default defineComponent({
       handleSelect,
       handleEsc,
       handleArrow,
+      handleClear,
       select,
       focused,
       searchTerm,
