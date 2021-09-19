@@ -53,7 +53,7 @@ import {
 export default defineComponent({
   name: "Typeahead",
   props: {
-    data: {
+    suggestions: {
       type: Array as PropType<Record<string, string>[]>,
       required: true,
     },
@@ -89,12 +89,12 @@ export default defineComponent({
     const searchTerm = ref("");
     const selected = ref(false);
     const focused = ref(-1);
-    const { valueKey, data, searchKey } = toRefs(props);
+    const { valueKey, suggestions, searchKey } = toRefs(props);
 
     const results: ComputedRef<Record<string, string>[]> = computed(
       (): Record<string, string>[] => {
         if (!searchTerm.value.length || selected.value) return [];
-        return data.value.filter((entry: Record<string, string>) =>
+        return suggestions.value.filter((entry: Record<string, string>) =>
           entry[searchKey.value]
             .toLowerCase()
             .includes(searchTerm.value.toLowerCase())
