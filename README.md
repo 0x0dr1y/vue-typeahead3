@@ -1,4 +1,4 @@
-# ⌨️ vue-typeahead3 ![Vue version](https://img.shields.io/badge/vue-3.2.6-brightgreen.svg) [![NPM version](https://img.shields.io/npm/v/vue-typeahead3.svg)](https://npmjs.com/package/vue-typeahead3) [![NPM downloads](https://img.shields.io/npm/dm/vue-typeahead3.svg)](https://npmjs.com/package/vue-typeahead3) ![size](https://img.shields.io/bundlephobia/min/vue-typeahead3)
+# ⌨️ vue-typeahead3 ![Vue version](https://img.shields.io/badge/vue-3.2.6-brightgreen.svg) [![NPM version](https://img.shields.io/npm/v/vue-typeahead3.svg)](https://npmjs.com/package/vue-typeahead3) [![NPM downloads](https://img.shields.io/npm/dm/vue-typeahead3.svg)](https://npmjs.com/package/vue-typeahead3) ![size](https://img.shields.io/bundlephobia/min/vue-typeahead3) [![vue-typeahead3](https://circleci.com/gh/MrDeerly/vue-typeahead3.svg?style=svg)](https://circleci.com/gh/MrDeerly/vue-typeahead3)
 
 <div align="center">
 <img src="https://s9.gifyu.com/images/typeahead.gif" width="350">
