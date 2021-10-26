@@ -20,12 +20,12 @@
   "license": "MIT",
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/MrDeerly/vue-typeahead.git"
+    "url": "git+https://github.com/MrDeerly/vue-typeahead3.git"
   },
   "bugs": {
-    "url": "https://github.com/MrDeerly/vue-typeahead/issues"
+    "url": "https://github.com/MrDeerly/vue-typeahead3/issues"
   },
-  "homepage": "https://github.com/MrDeerly/vue-typeahead",
+  "homepage": "https://github.com/MrDeerly/vue-typeahead3",
   "keywords": [
     "vue",
     "vue3",
