@@ -2,11 +2,11 @@
   <div class="typeahead-container">
     <div class="search-container">
       <input
-        type="search"
-        @search="handleClear"
         v-model="searchTerm"
-        :placeholder="placeholder"
+        type="search"
+        :placeholder="props.placeholder"
         :class="{ 'has-results': results.length }"
+        @search="handleClear"
         @keyup.up="handleArrow(-1)"
         @keyup.down="handleArrow(1)"
         @keyup.esc="handleEsc"
@@ -18,10 +18,10 @@
         <template v-for="(result, index) in results" :key="index">
           <li
             v-if="index < maxResults"
+            :class="{ focused: isFocused(index) }"
             @click="select(result)"
             @mouseover="focus(index)"
             @mouseleave="focus(-1)"
-            :class="{ focused: isFocused(index) }"
           >
             <h5 class="category">
               {{ result[categoryKey] }}
@@ -44,6 +44,7 @@
 import { ref, toRefs, ComputedRef, computed, watch } from "vue";
 
 interface Props {
+  modelValue: string;
   suggestions: Record<string, string>[];
   placeholder?: string;
   searchKey?: string;
@@ -67,7 +68,7 @@ const emit = defineEmits<{
 const searchTerm = ref("");
 const selected = ref(false);
 const focused = ref(-1);
-const { valueKey, suggestions, searchKey } = toRefs(props);
+const { valueKey, suggestions, searchKey, modelValue } = toRefs(props);
 
 const results: ComputedRef<Record<string, string>[]> = computed(
   (): Record<string, string>[] => {
@@ -122,6 +123,11 @@ const isFocused = (index: number): boolean => {
   return index === focused.value;
 };
 
+watch(modelValue, (newVal, oldVal) => {
+  if (newVal !== oldVal && newVal !== searchTerm.value) {
+    searchTerm.value = newVal;
+  }
+});
 watch(searchTerm, (newVal) => {
   if (newVal.length === 0) {
     selected.value = false;
