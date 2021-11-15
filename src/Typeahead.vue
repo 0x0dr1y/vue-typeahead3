@@ -13,11 +13,11 @@
         @keyup.enter="handleSelect"
       />
     </div>
-    <div v-if="results.length && !selected" class="results-container">
-      <ul class="results">
+    <div class="results-container">
+      <ul v-if="results.length && !selected" class="results">
         <template v-for="(result, index) in results" :key="index">
           <li
-            v-if="index < maxResults"
+            v-if="index < props.maxResults"
             :class="{ focused: isFocused(index) }"
             @click="select(result)"
             @mouseover="focus(index)"
@@ -31,9 +31,10 @@
           <li v-if="results.length === 0">Test</li>
         </template>
       </ul>
-    </div>
-    <div v-else-if="searchTerm && !results.length && !selected">
-      <ul class="results">
+      <ul
+        v-else-if="searchTerm && !results.length && !selected"
+        class="results"
+      >
         <li>No results found!</li>
       </ul>
     </div>
@@ -72,7 +73,7 @@ const { valueKey, suggestions, searchKey, modelValue } = toRefs(props);
 
 const results: ComputedRef<Record<string, string>[]> = computed(
   (): Record<string, string>[] => {
-    if (!searchTerm.value.length || selected.value) return [];
+    if (!searchTerm.value?.length || selected.value) return [];
     return suggestions.value.filter((entry: Record<string, string>) =>
       entry[searchKey.value]
         .toLowerCase()
@@ -128,8 +129,9 @@ watch(modelValue, (newVal: string, oldVal: string) => {
     searchTerm.value = newVal;
   }
 });
+
 watch(searchTerm, (newVal: string) => {
-  if (newVal.length === 0) {
+  if (!newVal || newVal.length === 0) {
     selected.value = false;
   }
 });
