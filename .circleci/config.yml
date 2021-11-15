@@ -25,6 +25,8 @@ jobs:
     docker:
       - image: node:14
     steps:
+      - checkout:
+          name: "GIT checkout"
       - run:
           name: "Clean NPM installation"
           command: "npm ci"

@@ -2,9 +2,9 @@
   <div class="typeahead-container">
     <div class="search-container">
       <input
-        v-model="searchTerm"
         type="search"
-        :placeholder="props.placeholder"
+        v-model="searchTerm"
+        :placeholder="placeholder"
         :class="{ 'has-results': results.length }"
         @search="handleClear"
         @keyup.up="handleArrow(-1)"
@@ -13,8 +13,8 @@
         @keyup.enter="handleSelect"
       />
     </div>
-    <div class="results-container">
-      <ul v-if="results.length && !selected" class="results">
+    <div v-if="results.length && !selected" class="results-container">
+      <ul class="results">
         <template v-for="(result, index) in results" :key="index">
           <li
             v-if="index < props.maxResults"
@@ -41,18 +41,50 @@
   </div>
 </template>
 
-<script lang="ts" setup>
-import { ref, toRefs, ComputedRef, computed, watch } from "vue";
-
-interface Props {
-  modelValue: string;
-  suggestions: Record<string, string>[];
-  placeholder?: string;
-  searchKey?: string;
-  categoryKey?: string;
-  valueKey?: string;
-  maxResults?: number;
-}
+<script lang="ts">
+import {
+  ref,
+  watch,
+  defineComponent,
+  computed,
+  toRefs,
+  ComputedRef,
+  PropType,
+} from "vue";
+export default defineComponent({
+  name: "Typeahead",
+  props: {
+    suggestions: {
+      type: Array as PropType<Record<string, string>[]>,
+      required: true,
+    },
+    placeholder: {
+      type: String,
+      required: false,
+      default: "Type to search...",
+    },
+    searchKey: {
+      type: String,
+      required: false,
+      default: "value",
+    },
+    categoryKey: {
+      type: String,
+      required: false,
+      default: "category",
+    },
+    valueKey: {
+      type: String,
+      required: false,
+      default: "value",
+    },
+    maxResults: {
+      type: Number,
+      required: false,
+      default: 5,
+    },
+  },
+  emits: ["update:modelValue"],
 
 const props = withDefaults(defineProps<Props>(), {
   placeholder: "Type to search...",
