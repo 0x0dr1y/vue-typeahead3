@@ -2,11 +2,11 @@
   <div class="typeahead-container">
     <div class="search-container">
       <input
-        type="search"
-        @search="handleClear"
         v-model="searchTerm"
-        :placeholder="placeholder"
+        type="search"
+        :placeholder="props.placeholder"
         :class="{ 'has-results': results.length }"
+        @search="handleClear"
         @keyup.up="handleArrow(-1)"
         @keyup.down="handleArrow(1)"
         @keyup.esc="handleEsc"
@@ -18,10 +18,10 @@
         <template v-for="(result, index) in results" :key="index">
           <li
             v-if="index < maxResults"
+            :class="{ focused: isFocused(index) }"
             @click="select(result)"
             @mouseover="focus(index)"
             @mouseleave="focus(-1)"
-            :class="{ focused: isFocused(index) }"
           >
             <h5 class="category">
               {{ result[categoryKey] }}
@@ -40,130 +40,98 @@
   </div>
 </template>
 
-<script lang="ts">
-import {
-  ref,
-  watch,
-  defineComponent,
-  computed,
-  toRefs,
-  ComputedRef,
-  PropType,
-} from "vue";
-export default defineComponent({
-  name: "Typeahead",
-  props: {
-    suggestions: {
-      type: Array as PropType<Record<string, string>[]>,
-      required: true,
-    },
-    placeholder: {
-      type: String,
-      required: false,
-      default: "Type to search...",
-    },
-    searchKey: {
-      type: String,
-      required: false,
-      default: "value",
-    },
-    categoryKey: {
-      type: String,
-      required: false,
-      default: "category",
-    },
-    valueKey: {
-      type: String,
-      required: false,
-      default: "value",
-    },
-    maxResults: {
-      type: Number,
-      required: false,
-      default: 5,
-    },
-  },
-  emits: ["update:modelValue"],
+<script lang="ts" setup>
+import { ref, toRefs, ComputedRef, computed, watch } from "vue";
 
-  setup(props, { emit }) {
-    const searchTerm = ref("");
-    const selected = ref(false);
-    const focused = ref(-1);
-    const { valueKey, suggestions, searchKey } = toRefs(props);
+interface Props {
+  modelValue: string;
+  suggestions: Record<string, string>[];
+  placeholder?: string;
+  searchKey?: string;
+  categoryKey?: string;
+  valueKey?: string;
+  maxResults?: number;
+}
 
-    const results: ComputedRef<Record<string, string>[]> = computed(
-      (): Record<string, string>[] => {
-        if (!searchTerm.value.length || selected.value) return [];
-        return suggestions.value.filter((entry: Record<string, string>) =>
-          entry[searchKey.value]
-            .toLowerCase()
-            .includes(searchTerm.value.toLowerCase())
-        );
-      }
+const props = withDefaults(defineProps<Props>(), {
+  placeholder: "Type to search...",
+  searchKey: "value",
+  categoryKey: "category",
+  valueKey: "value",
+  maxResults: 5,
+});
+
+const emit = defineEmits<{
+  (e: "update:modelValue", result?: Record<string, string>): void;
+}>();
+
+const searchTerm = ref("");
+const selected = ref(false);
+const focused = ref(-1);
+const { valueKey, suggestions, searchKey, modelValue } = toRefs(props);
+
+const results: ComputedRef<Record<string, string>[]> = computed(
+  (): Record<string, string>[] => {
+    if (!searchTerm.value.length || selected.value) return [];
+    return suggestions.value.filter((entry: Record<string, string>) =>
+      entry[searchKey.value]
+        .toLowerCase()
+        .includes(searchTerm.value.toLowerCase())
     );
+  }
+);
 
-    const select = (result: Record<string, string>): void => {
-      searchTerm.value = result[valueKey.value];
-      selected.value = true;
-      return emit("update:modelValue", result);
-    };
+const select = (result: Record<string, string>): void => {
+  searchTerm.value = result[valueKey.value];
+  selected.value = true;
+  return emit("update:modelValue", result);
+};
 
-    const handleArrow = (dir: number): void => {
-      if (dir < 0) {
-        if (focused.value > 0) {
-          focused.value--;
-        }
-      } else if (dir > 0 && focused.value < results.value.length - 1) {
-        focused.value++;
-      }
-    };
+const handleArrow = (dir: number): void => {
+  if (dir < 0) {
+    if (focused.value > 0) {
+      focused.value--;
+    }
+  } else if (dir > 0 && focused.value < results.value.length - 1) {
+    focused.value++;
+  }
+};
 
-    const handleEsc = (): void => {
-      searchTerm.value = "";
-      selected.value = false;
-      focused.value = -1;
-      return emit("update:modelValue", null);
-    };
+const handleEsc = (): void => {
+  searchTerm.value = "";
+  selected.value = false;
+  focused.value = -1;
+  return emit("update:modelValue", undefined);
+};
 
-    const handleClear = (): void => {
-      if (!searchTerm.value) {
-        handleEsc();
-      }
-    };
+const handleClear = (): void => {
+  if (!searchTerm.value) {
+    handleEsc();
+  }
+};
 
-    const handleSelect = (): void => {
-      const result = results.value[focused.value];
-      select(result);
-    };
+const handleSelect = (): void => {
+  const result = results.value[focused.value];
+  select(result);
+};
 
-    const focus = (index: number): void => {
-      focused.value = index;
-    };
+const focus = (index: number): void => {
+  focused.value = index;
+};
 
-    const isFocused = (index: number): boolean => {
-      return index === focused.value;
-    };
+const isFocused = (index: number): boolean => {
+  return index === focused.value;
+};
 
-    watch(searchTerm, (newVal) => {
-      if (newVal.length === 0) {
-        selected.value = false;
-      }
-    });
-
-    return {
-      results,
-      isFocused,
-      focus,
-      handleSelect,
-      handleEsc,
-      handleArrow,
-      handleClear,
-      select,
-      focused,
-      searchTerm,
-      selected,
-    };
-  },
+watch(modelValue, (newVal: string, oldVal: string) => {
+  if (newVal !== oldVal && newVal !== searchTerm.value) {
+    searchTerm.value = newVal;
+  }
+});
+watch(searchTerm, (newVal: string) => {
+  if (newVal.length === 0) {
+    selected.value = false;
+  }
 });
 </script>
 
