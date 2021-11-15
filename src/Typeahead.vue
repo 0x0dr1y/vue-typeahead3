@@ -123,12 +123,12 @@ const isFocused = (index: number): boolean => {
   return index === focused.value;
 };
 
-watch(modelValue, (newVal, oldVal) => {
+watch(modelValue, (newVal: string, oldVal: string) => {
   if (newVal !== oldVal && newVal !== searchTerm.value) {
     searchTerm.value = newVal;
   }
 });
-watch(searchTerm, (newVal) => {
+watch(searchTerm, (newVal: string) => {
   if (newVal.length === 0) {
     selected.value = false;
   }
