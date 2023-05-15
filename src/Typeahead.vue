@@ -87,6 +87,8 @@ const select = (result: Record<string, string>): void => {
   return emit("update:modelValue", result);
 };
 
+expose({select});
+
 const handleArrow = (dir: number): void => {
   if (dir < 0) {
     if (focused.value > 0) {
@@ -124,7 +126,7 @@ const isFocused = (index: number): boolean => {
 };
 
 watch(modelValue, (newVal: string, oldVal: string) => {
-  if (newVal !== oldVal && newVal !== searchTerm.value) {
+  if (newVal !== oldVal && newVal[props.valueKey] !== searchTerm.value) {
     searchTerm.value = newVal;
   }
 });
