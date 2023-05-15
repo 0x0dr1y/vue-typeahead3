@@ -41,7 +41,7 @@
 </template>
 
 <script lang="ts" setup>
-import { ref, toRefs, ComputedRef, computed, watch } from "vue";
+import { ref, toRefs, ComputedRef, computed, watch, defineExpose } from "vue";
 
 interface Props {
   modelValue: string;
@@ -87,7 +87,7 @@ const select = (result: Record<string, string>): void => {
   return emit("update:modelValue", result);
 };
 
-expose({select});
+defineExpose({select});
 
 const handleArrow = (dir: number): void => {
   if (dir < 0) {
@@ -125,9 +125,9 @@ const isFocused = (index: number): boolean => {
   return index === focused.value;
 };
 
-watch(modelValue, (newVal: string, oldVal: string) => {
+watch(modelValue, (newVal: Record<string,string>, oldVal: Record<string,string>) => {
   if (newVal !== oldVal && newVal[props.valueKey] !== searchTerm.value) {
-    searchTerm.value = newVal;
+    select(newVal)
   }
 });
 watch(searchTerm, (newVal: string) => {
