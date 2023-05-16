@@ -44,7 +44,7 @@
 import { ref, toRefs, ComputedRef, computed, watch, defineExpose } from "vue";
 
 interface Props {
-  modelValue: string;
+  modelValue: string | Record<string, string>;
   suggestions: Record<string, string>[];
   placeholder?: string;
   searchKey?: string;
@@ -125,14 +125,14 @@ const isFocused = (index: number): boolean => {
   return index === focused.value;
 };
 
-watch(modelValue, (newVal: Record<string,string>, oldVal: Record<string,string>) => {
+watch(modelValue, (newVal: Record<string, string>, oldVal: Record<string, string>) => {
   if (newVal === oldVal) { return; }
 
   if (newVal && newVal[props.valueKey] !== searchTerm?.value) {
     select(newVal)
   }
 
-  if (!newVal && newVal[props.valueKey] !== searchTerm?.value) {
+  if (!newVal && searchTerm.value && newVal[props.valueKey] !== searchTerm.value) {
     handleClear()
   }
 });
