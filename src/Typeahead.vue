@@ -126,8 +126,14 @@ const isFocused = (index: number): boolean => {
 };
 
 watch(modelValue, (newVal: Record<string,string>, oldVal: Record<string,string>) => {
-  if (newVal !== oldVal && newVal[props.valueKey] !== searchTerm.value) {
+  if (newVal === oldVal) { return; }
+
+  if (newVal && newVal[props.valueKey] !== searchTerm?.value) {
     select(newVal)
+  }
+
+  if (!newVal && newVal[props.valueKey] !== searchTerm?.value) {
+    handleClear()
   }
 });
 watch(searchTerm, (newVal: string) => {
