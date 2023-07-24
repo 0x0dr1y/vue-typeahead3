@@ -32,7 +32,7 @@
         </template>
       </ul>
     </div>
-    <div v-else-if="searchTerm && !results.length && !selected">
+    <div v-else-if="searchTerm && !results.length && !selected" class="results-container">
       <ul class="results">
         <li>No results found!</li>
       </ul>
