@@ -72,7 +72,7 @@ const { valueKey, suggestions, searchKey, modelValue } = toRefs(props);
 
 const results: ComputedRef<Record<string, string>[]> = computed(
   (): Record<string, string>[] => {
-    if (!searchTerm.value.length || selected.value) return [];
+    if (!searchTerm?.value?.length || selected?.value) return [];
     return suggestions.value.filter((entry: Record<string, string>) =>
       entry[searchKey.value]
         .toLowerCase()
