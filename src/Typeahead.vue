@@ -138,7 +138,7 @@ watch(modelValue, (newVal: Record<string, string>, oldVal: Record<string, string
 });
 watch(searchTerm, (newVal: string) => {
   if (!newVal || newVal.length === 0) {
-    selected.value = false;
+    handleEsc();
   }
 });
 </script>
