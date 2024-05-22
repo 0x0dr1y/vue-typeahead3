@@ -136,8 +136,9 @@ watch(modelValue, (newVal: Record<string, string>, oldVal: Record<string, string
     handleClear()
   }
 });
-watch(searchTerm, (newVal: string) => {
-  if (!newVal || newVal.length === 0) {
+watch(searchTerm, (newVal: string, oldVal: string) => {
+
+  if (newVal !== oldVal && (!newVal || newVal.length === 0)) {
     selected.value = false;
     focused.value = -1;
     return emit("update:modelValue", undefined);
